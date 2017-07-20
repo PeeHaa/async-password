@@ -8,25 +8,28 @@ use Amp\Promise;
 
 function password_hash(string $password, int $algo, array $options = []): Promise
 {
-    $phpFile = escapeshellarg(realpath(__DIR__ . '/process/password_hash.php'));
-
-    $data = [
+    $parameters = base64_encode(json_encode([
         'password' => $password,
         'algo'     => $algo,
         'options'  => $options,
-    ];
+    ]));
 
-    $encodedData = base64_encode(json_encode($data));
+    return call(function() use ($parameters) {
+        $phpFile = escapeshellarg(realpath(__DIR__ . '/../bin/password_hash.php'));
 
-    return call(function() use ($phpFile, $encodedData) {
-        $process = new Process("php $phpFile $encodedData");
+        $process = new Process("php $phpFile $parameters");
 
         $process->start();
 
         $exitCode = yield $process->join();
 
-        if ($exitCode !== 0) {
-            throw new \Exception('Could not hash password (' . $exitCode . ').');
+        switch ($exitCode) {
+            case 1:
+                throw new \BadMethodCallException();
+
+            case 2:
+            case 3:
+                throw new \InvalidArgumentException();
         }
 
         return yield $process->getStdout()->read();
@@ -35,26 +38,29 @@ function password_hash(string $password, int $algo, array $options = []): Promis
 
 function password_verify(string $password, string $hash): Promise
 {
-    $phpFile = escapeshellarg(realpath(__DIR__ . '/process/password_verify.php'));
-
-    $data = [
+    $parameters = base64_encode(json_encode([
         'password' => $password,
         'hash'     => $hash,
-    ];
+    ]));
 
-    $encodedData = base64_encode(json_encode($data));
+    return call(function() use ($parameters) {
+        $phpFile = escapeshellarg(realpath(__DIR__ . '/../bin/password_verify.php'));
 
-    return call(function() use ($phpFile, $encodedData) {
-        $process = new Process("php $phpFile $encodedData");
+        $process = new Process("php $phpFile $parameters");
 
         $process->start();
 
         $exitCode = yield $process->join();
 
-        if ($exitCode !== 0) {
-            return false;
+        switch ($exitCode) {
+            case 1:
+                throw new \BadMethodCallException();
+
+            case 2:
+            case 3:
+                throw new \InvalidArgumentException();
         }
 
-        return true;
+        return $exitCode === 0;
     });
 }
