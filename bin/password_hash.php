@@ -1,17 +1,17 @@
 <?php declare(strict_types=1);
 
 if (count($argv) !== 2) {
-    exit(1);
+    exit(101);
 }
 
 $data = json_decode(base64_decode($argv[1]), true);
 
 if (json_last_error() !== JSON_ERROR_NONE) {
-    exit(2);
+    exit(102);
 }
 
 if (!isset($data['password'], $data['algo'], $data['options'])) {
-    exit(3);
+    exit(103);
 }
 
 echo password_hash($data['password'], $data['algo'], $data['options']);

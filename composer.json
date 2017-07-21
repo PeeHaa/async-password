@@ -21,7 +21,10 @@
     "phpunit/phpunit": "^6"
   },
   "autoload": {
-    "files": ["src/functions.php"]
+    "files": ["src/functions.php"],
+    "psr-4": {
+      "PeeHaa\\AsyncPassword\\": "src/"
+    }
   },
   "autoload-dev": {
     "psr-4": {
