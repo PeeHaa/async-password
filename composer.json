@@ -28,7 +28,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "PeeHaa\\AsyncPasswordTests\\": "tests/"
+      "PeeHaa\\AsyncPasswordTests\\": "tests/Unit"
     }
   }
 }
