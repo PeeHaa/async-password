@@ -6,29 +6,29 @@ use function Amp\call;
 use Amp\Process\Process;
 use Amp\Promise;
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
 function password_hash(string $password, int $algo, array $options = []): Promise
 {
-    $parameters = base64_encode(json_encode([
+    $command = new Command('password_hash.php', [
         'password' => $password,
         'algo'     => $algo,
         'options'  => $options,
-    ]));
+    ]);
 
-    return call(function() use ($parameters) {
-        $phpFile = escapeshellarg(realpath(__DIR__ . '/../bin/password_hash.php'));
-
-        $process = new Process("php $phpFile $parameters");
+    return call(function() use ($command) {
+        $process = new Process($command->getCommandString(), null, [], ['bypass_shell' => true]);
 
         $process->start();
 
         $exitCode = yield $process->join();
 
         switch ($exitCode) {
-            case 1:
+            case 101:
                 throw new \BadMethodCallException();
 
-            case 2:
-            case 3:
+            case 102:
+            case 103:
                 throw new \InvalidArgumentException();
         }
 
@@ -38,26 +38,24 @@ function password_hash(string $password, int $algo, array $options = []): Promis
 
 function password_verify(string $password, string $hash): Promise
 {
-    $parameters = base64_encode(json_encode([
+    $command = new Command('password_verify.php', [
         'password' => $password,
         'hash'     => $hash,
-    ]));
+    ]);
 
-    return call(function() use ($parameters) {
-        $phpFile = escapeshellarg(realpath(__DIR__ . '/../bin/password_verify.php'));
-
-        $process = new Process("php $phpFile $parameters");
+    return call(function() use ($command) {
+        $process = new Process($command->getCommandString(), null, [], ['bypass_shell' => true]);
 
         $process->start();
 
         $exitCode = yield $process->join();
 
         switch ($exitCode) {
-            case 1:
+            case 101:
                 throw new \BadMethodCallException();
 
-            case 2:
-            case 3:
+            case 102:
+            case 103:
                 throw new \InvalidArgumentException();
         }
 
