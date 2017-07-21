@@ -11,6 +11,8 @@ class CommandPhpDbgTest extends TestCase
 
     private $emptyParameters;
 
+    private $outputFormat;
+
     public function setUp()
     {
         if (PHP_SAPI !== 'phpdbg') {
@@ -21,13 +23,19 @@ class CommandPhpDbgTest extends TestCase
 
         $this->phpFile         = realpath(__DIR__ . '/../../bin/password_hash.php');
         $this->emptyParameters = base64_encode(json_encode([]));
+
+        if (stripos(PHP_OS, 'win') === 0) {
+            $this->outputFormat = '"%s" -b -qrr -- "%s" %s';
+        } else {
+            $this->outputFormat = "'%s' -b -qrr -- '%s' %s";
+        }
     }
 
     public function testGetCommandStringWithoutParameters()
     {
         $command = new Command('password_hash.php');
 
-        $expected = sprintf('"%s" -b -qrr -- "%s" %s', PHP_BINARY, $this->phpFile, $this->emptyParameters);
+        $expected = sprintf($this->outputFormat, PHP_BINARY, $this->phpFile, $this->emptyParameters);
 
         $this->assertSame($expected, $command->getCommandString());
     }
@@ -36,7 +44,7 @@ class CommandPhpDbgTest extends TestCase
     {
         $command = new Command('password_hash.php', ['foo' => 'bar']);
 
-        $expected = sprintf('"%s" -b -qrr -- "%s" %s', PHP_BINARY, $this->phpFile, base64_encode(json_encode(['foo' => 'bar'])));
+        $expected = sprintf($this->outputFormat, PHP_BINARY, $this->phpFile, base64_encode(json_encode(['foo' => 'bar'])));
 
         $this->assertSame($expected, $command->getCommandString());
     }
