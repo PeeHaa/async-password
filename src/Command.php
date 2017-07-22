@@ -41,4 +41,13 @@ class Command
     {
         return base64_encode(json_encode($this->parameters));
     }
+
+    public function getParameter(string $name)
+    {
+        if (!array_key_exists($name, $this->parameters)) {
+            throw new \Exception('Invalid parameter');
+        }
+
+        return $this->parameters[$name];
+    }
 }
