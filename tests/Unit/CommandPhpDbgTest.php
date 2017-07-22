@@ -59,4 +59,21 @@ class CommandPhpDbgTest extends TestCase
 
         $this->assertSame(['foo' => 'bar'], $encodedParameters);
     }
+
+    public function testGetParameter()
+    {
+        $command = new Command('password_hash.php', ['foo' => 'bar']);
+
+        $this->assertSame('bar', $command->getParameter('foo'));
+    }
+
+    public function testGetParameterThrowsOnInvalidParameter()
+    {
+        $command = new Command('password_hash.php', ['foo' => 'bar']);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Invalid parameter');
+
+        $command->getParameter('unknown');
+    }
 }
