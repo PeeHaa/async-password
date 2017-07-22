@@ -24,7 +24,7 @@ class CommandPhpTest extends TestCase
         $this->phpFile         = realpath(__DIR__ . '/../../bin/password_hash.php');
         $this->emptyParameters = base64_encode(json_encode([]));
 
-        if (stripos(PHP_OS, "win")) {
+        if (stripos(PHP_OS, 'win') === 0) {
             $this->outputFormat = '"%s" "%s" %s';
         } else {
             $this->outputFormat = "'%s' '%s' %s";
