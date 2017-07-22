@@ -6,8 +6,6 @@ use function Amp\call;
 use Amp\Process\Process;
 use Amp\Promise;
 
-require_once __DIR__ . '/../vendor/autoload.php';
-
 function password_hash(string $password, int $algo, array $options = []): Promise
 {
     $command = new Command('password_hash.php', [
