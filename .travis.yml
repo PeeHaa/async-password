@@ -11,6 +11,7 @@ env:
 before_script:
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction
+  - pecl install uopz
 
 script:
   - $BINARY vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
