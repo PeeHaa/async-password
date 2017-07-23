@@ -1,5 +1,5 @@
 {
-  "name": "Peehaa/async-password",
+  "name": "peehaa/async-password",
   "description": "Simple utility library which makes the native password_* API async friendly",
   "keywords": ["amphp", "async", "password"],
   "license": "MIT",
