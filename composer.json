@@ -15,7 +15,7 @@
   "prefer-stable": true,
   "require": {
     "php": "~7.1",
-    "amphp/process": "^0.2"
+    "amphp/process": "dev-master"
   },
   "require-dev": {
     "phpunit/phpunit": "^6"
